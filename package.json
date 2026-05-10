@@ -4,9 +4,12 @@
   "description": "",
   "main": "dist/main.js",
   "scripts": {
-    "build": "tsc",
-    "start": "npm run build && electron .",
-    "dev": "concurrently \"tsc -w\" \"wait-on dist/main.js && electron .\""
+    "build:main": "tsc",
+    "build:renderer": "vite build",
+    "build": "npm run build:main && npm run build:renderer",
+    "dev:renderer": "vite --host 127.0.0.1 --port 5173",
+    "electron": "npm run build:main && wait-on http://127.0.0.1:5173 && NODE_ENV=development electron .",
+    "dev": "concurrently \"npm run dev:renderer\" \"npm run electron\""
   },
   "devDependencies": {
     "@types/node": "^25.6.2",
@@ -14,7 +17,12 @@
     "electron": "^42.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "wait-on": "^9.0.5"
+    "vite": "^8.0.11",
+    "wait-on": "^9.0.6"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.0",
+    "tailwindcss": "^4.3.0"
+  }
 }

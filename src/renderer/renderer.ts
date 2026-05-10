@@ -10,24 +10,11 @@ window.addEventListener("load", () => {
         console.log(content);
     });
 
-    listOfSucursales.innerHTML =
-        '<option value="">Selecciona una sucursal</option>';
 
     loadSucursales?.addEventListener("click", async () => {
         try {
             const sucursales = await window.api.sucursales.get_sucursales();
-
-            listOfSucursales.innerHTML =
-                '<option value="">Selecciona una sucursal</option>';
-
-            sucursales.forEach((sucursal) => {
-                const opcion = document.createElement("option");
-
-                opcion.value = sucursal.idSucursal;
-                opcion.innerText = sucursal.nombre;
-
-                listOfSucursales.appendChild(opcion);
-            });
+            renderSucursales(sucursales);
         } catch (error) {
             console.error("Error cargando sucursales:", error);
         }
@@ -51,4 +38,21 @@ window.addEventListener("load", () => {
             console.error("Error cargando servicios:", error);
         }
     });
+
+    function renderSucursales(sucursales: any[]) {
+        const select = document.getElementById("listOfSucursales") as HTMLSelectElement;
+
+        select.innerHTML = `
+    <option value="">Selecciona una sucursal</option>
+    ${sucursales
+            .map(
+                (sucursal) => `
+          <option value="${sucursal.idSucursal}">
+            ${sucursal.nombre}
+          </option>
+        `
+            )
+            .join("")}
+  `;
+    }
 });
