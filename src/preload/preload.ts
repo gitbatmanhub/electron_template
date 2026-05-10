@@ -6,5 +6,9 @@ contextBridge.exposeInMainWorld("api", {
     },
     sucursales: {
         get_sucursales: () => ipcRenderer.invoke("sucursales:get_sucursales")
+    },
+    servicios: {
+        getBySucursal: (idSucursal: string) =>
+            ipcRenderer.invoke("servicios:get-by-sucursal", idSucursal)
     }
 });

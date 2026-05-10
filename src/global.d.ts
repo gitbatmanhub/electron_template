@@ -12,10 +12,9 @@ declare global {
             sucursales: {
                 get_sucursales: () => Promise<Sucursal[]>;
             };
-            servicios_sucursales: {
-                get_servicios_sucursales: () => Promise<ServiciosSucursales[]>;
-
-            }
+            servicios: {
+                getBySucursal: (idSucursal: string) => Promise<ServiciosSucursales[]>;
+            };
         };
     }
 }

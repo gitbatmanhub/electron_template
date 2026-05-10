@@ -1,10 +1,12 @@
-
-import {ipcMain} from "electron";
-import {getSucursales} from "../services/sucursales.service";
+import { ipcMain } from "electron";
 import {getServiciosSucursales} from "../services/servicios.sucursales.service";
 
-export function registerServiciosSucursalesHandler(idSucursal?: string) {
-    ipcMain.handle("servicios_sucursales:get_servicios_sucursales", async ()=>{
+export function registerServiciosHandlers() {
+    ipcMain.handle("servicios:get-by-sucursal", async (_event, idSucursal: string) => {
+        if (!idSucursal) {
+            throw new Error("idSucursal es requerido");
+        }
+
         return getServiciosSucursales(idSucursal);
     });
 }
