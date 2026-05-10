@@ -1,8 +1,10 @@
-import {contextBridge} from 'electron'
+import { contextBridge, ipcRenderer } from "electron";
 
-contextBridge.exposeInMainWorld('versions', {
-    node: () => process.versions.node,
-    chrome: () => process.versions.chrome,
-    electron: () => process.versions.electron
-    // we can also expose variables, not just functions
-})
+contextBridge.exposeInMainWorld("api", {
+    file: {
+        open: () => ipcRenderer.invoke("file:open")
+    },
+    sucursales: {
+        get_sucursales: () => ipcRenderer.invoke("sucursales:get_sucursales")
+    }
+});
