@@ -1,29 +1,24 @@
 import { app, BrowserWindow } from "electron";
 import path from "node:path";
-
-function createWindow() {
-    const win = new BrowserWindow({
-        width: 900,
-        height: 600,
-        webPreferences: {
-            preload: path.join(__dirname, "preload/preload.js"),
-        }
-    });
+import {registerAppHandlers} from "./ipc/app.handlers";
+import {registerFileHandlers} from "./ipc/file.handler";
+import {createWindow} from "./windows/createMainWindow";
+import {registerSucursalesHandler} from "./ipc/sucursales.handler";
+import {registerServiciosSucursalesHandler} from "./ipc/servicios.sucursales.handler";
 
 
-    win.loadFile('src/renderer/index.html');
-}
 
-app.whenReady().then(createWindow);
+app.whenReady().then(()=>{
+    registerAppHandlers();
+    registerFileHandlers();
+    registerSucursalesHandler();
+    registerServiciosSucursalesHandler();
 
-app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") {
-        app.quit();
-    }
+
+    createWindow();
+
 });
 
-app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow();
-    }
-});
+
+
+

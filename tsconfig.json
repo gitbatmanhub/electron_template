@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es2016",
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
+    "target": "ES2022",
+    "module": "CommonJS",
+    "outDir": "dist",
+    "rootDir": "src",
     "strict": true,
-    "skipLibCheck": true,
-    "outDir": "dist"
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "types": ["node"]
   },
   "include": ["src"]
 }
