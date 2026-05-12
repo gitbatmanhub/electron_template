@@ -9,7 +9,9 @@
     "build": "npm run build:main && npm run build:renderer",
     "dev:renderer": "vite --host 127.0.0.1 --port 5173",
     "electron": "npm run build:main && wait-on http://127.0.0.1:5173 && NODE_ENV=development electron .",
-    "dev": "concurrently \"npm run dev:renderer\" \"npm run electron\""
+    "dev": "concurrently \"npm run dev:renderer\" \"npm run electron\"",
+    "start": "npm run build && electron .",
+    "start:kiosk": "npm run build && TOTEM_KIOSK=true electron ."
   },
   "devDependencies": {
     "@types/node": "^25.6.2",

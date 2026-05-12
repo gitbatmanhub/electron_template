@@ -352,7 +352,8 @@ async function printTicket() {
         closeTicket();
     } catch (error) {
         console.error("Error imprimiendo ticket:", error);
-        window.print();
+        errorMessage = "No se pudo imprimir el ticket. Revisa la impresora configurada.";
+        closeTicket();
     }
 }
 

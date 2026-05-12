@@ -8,7 +8,7 @@ export function registerPrinterHandlers() {
             throw new Error("No se encontró la ventana para imprimir");
         }
 
-        const silent = process.env.TOTEM_SILENT_PRINT === "true";
+        const silent = process.env.TOTEM_SILENT_PRINT !== "false";
 
         return new Promise<boolean>((resolve, reject) => {
             window.webContents.print(
