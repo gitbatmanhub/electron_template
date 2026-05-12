@@ -5,6 +5,8 @@ import {registerFileHandlers} from "./ipc/file.handler";
 import {createWindow} from "./windows/createMainWindow";
 import {registerSucursalesHandler} from "./ipc/sucursales.handler";
 import {registerServiciosHandlers} from "./ipc/servicios.sucursales.handler";
+import {registerTurnosHandlers} from "./ipc/turnos.handler";
+import {registerPrinterHandlers} from "./ipc/printer.handler";
 
 
 
@@ -13,12 +15,12 @@ app.whenReady().then(()=>{
     registerFileHandlers();
     registerSucursalesHandler();
     registerServiciosHandlers();
+    registerTurnosHandlers();
+    registerPrinterHandlers();
 
 
     createWindow();
 
 });
-
-
 
 

@@ -3,10 +3,15 @@ import path from "node:path";
 
 export function createWindow() {
     const isDev = process.env.NODE_ENV === "development";
+    const kioskEnabled = process.env.TOTEM_KIOSK === "true";
 
     const win = new BrowserWindow({
-        // fullscreen: true,
-        // kiosk: true,
+        width: 1280,
+        height: 900,
+        minWidth: 1024,
+        minHeight: 720,
+        fullscreen: kioskEnabled,
+        kiosk: kioskEnabled,
         autoHideMenuBar: true,
         webPreferences: {
             preload: path.join(__dirname, "../preload/preload.js"),

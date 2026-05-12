@@ -15,6 +15,12 @@ declare global {
             servicios: {
                 getBySucursal: (idSucursal: string) => Promise<ServiciosSucursales[]>;
             };
+            turnos: {
+                create: (idServicio: string) => Promise<TurnoResponse>;
+            };
+            printer: {
+                printCurrent: () => Promise<boolean>;
+            };
         };
     }
 }
@@ -32,11 +38,20 @@ export interface ServiciosSucursales {
     idSucursal: string
     nombre: string
     codigo: string
-    descripcion: string
-    idCategoriaCola: string
+    descripcion?: string | null
+    idCategoriaCola?: string
     activo: boolean
-    imagenUrl: string
-    imagenFileName: string
-    deletedAt: any
+    imagenUrl?: string | null
+    imagenFileName?: string | null
+    deletedAt?: any
 }
 
+export interface TurnoResponse {
+    turno?: string | number
+    codigo?: string | number
+    ticket?: string | number
+    codigoServicio?: string
+    numeroTurno?: string | number
+    numero?: string | number
+    data?: TurnoResponse
+}

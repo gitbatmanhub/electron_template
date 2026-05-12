@@ -10,5 +10,12 @@ contextBridge.exposeInMainWorld("api", {
     servicios: {
         getBySucursal: (idSucursal: string) =>
             ipcRenderer.invoke("servicios:get-by-sucursal", idSucursal)
+    },
+    turnos: {
+        create: (idServicio: string) =>
+            ipcRenderer.invoke("turnos:create", idServicio)
+    },
+    printer: {
+        printCurrent: () => ipcRenderer.invoke("printer:print-current")
     }
 });
