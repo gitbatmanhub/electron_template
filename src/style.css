@@ -27,6 +27,7 @@ body {
 }
 
 button,
+input,
 select {
     font: inherit;
 }
@@ -149,6 +150,7 @@ button:disabled {
     font-weight: 800;
 }
 
+.endpoint-input,
 .branch-select {
     width: 100%;
     min-height: 64px;
@@ -161,6 +163,11 @@ button:disabled {
     outline: none;
 }
 
+.endpoint-input {
+    margin-bottom: 22px;
+}
+
+.endpoint-input:focus,
 .branch-select:focus {
     border-color: #7a2fa2;
     box-shadow: 0 0 0 4px rgba(122, 47, 162, 0.14);

@@ -10,13 +10,13 @@ declare global {
                 open: () => Promise<string | null>;
             };
             sucursales: {
-                get_sucursales: () => Promise<Sucursal[]>;
+                get_sucursales: (apiBaseUrl?: string) => Promise<Sucursal[]>;
             };
             servicios: {
-                getBySucursal: (idSucursal: string) => Promise<ServiciosSucursales[]>;
+                getBySucursal: (idSucursal: string, apiBaseUrl?: string) => Promise<ServiciosSucursales[]>;
             };
             turnos: {
-                create: (idServicio: string) => Promise<TurnoResponse>;
+                create: (idServicio: string, apiBaseUrl?: string) => Promise<TurnoResponse>;
             };
             printer: {
                 printCurrent: () => Promise<boolean>;

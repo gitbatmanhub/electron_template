@@ -2,7 +2,7 @@ import { ipcMain } from "electron";
 import { crearTurno } from "../services/turnos.service";
 
 export function registerTurnosHandlers() {
-    ipcMain.handle("turnos:create", async (_event, idServicio: string) => {
+    ipcMain.handle("turnos:create", async (_event, idServicio: string, apiBaseUrl?: string) => {
         if (!idServicio) {
             throw new Error("idServicio es requerido");
         }
@@ -10,6 +10,6 @@ export function registerTurnosHandlers() {
         return crearTurno({
             idServicio,
             origen: "Totem"
-        });
+        }, apiBaseUrl);
     });
 }

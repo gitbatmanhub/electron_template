@@ -29,11 +29,14 @@ type TurnoResponse = {
 };
 
 const STORAGE_SUCURSAL_KEY = "totem.selectedSucursalId";
+const STORAGE_API_BASE_URL_KEY = "totem.apiBaseUrl";
+const DEFAULT_API_BASE_URL = "http://localhost:3000";
 const app = document.getElementById("app") as HTMLDivElement;
 
 let sucursales: Sucursal[] = [];
 let servicios: Servicio[] = [];
 let selectedSucursalId = localStorage.getItem(STORAGE_SUCURSAL_KEY) ?? "";
+let apiBaseUrl = localStorage.getItem(STORAGE_API_BASE_URL_KEY) ?? DEFAULT_API_BASE_URL;
 let isLoading = false;
 let errorMessage = "";
 
@@ -51,9 +54,13 @@ window.addEventListener("afterprint", () => {
 });
 
 async function loadSucursales() {
+    if (!saveConfiguredApiBaseUrl()) {
+        return;
+    }
+
     setLoading(true);
     try {
-        const response = await window.api.sucursales.get_sucursales();
+        const response = await window.api.sucursales.get_sucursales(apiBaseUrl);
         sucursales = normalizeArray<Sucursal>(response).filter((sucursal) => sucursal.activa !== false);
 
         if (!sucursales.some((sucursal) => sucursal.idSucursal === selectedSucursalId)) {
@@ -71,9 +78,13 @@ async function loadSucursales() {
 }
 
 async function loadServicios(idSucursal: string) {
+    if (!saveConfiguredApiBaseUrl()) {
+        return;
+    }
+
     setLoading(true);
     try {
-        const response = await window.api.servicios.getBySucursal(idSucursal);
+        const response = await window.api.servicios.getBySucursal(idSucursal, apiBaseUrl);
         servicios = normalizeArray<Servicio>(response).filter((servicio) => servicio.activo !== false);
         selectedSucursalId = idSucursal;
         localStorage.setItem(STORAGE_SUCURSAL_KEY, idSucursal);
@@ -126,6 +137,18 @@ function renderSetupView() {
                 <p>Esta pantalla queda disponible para configurar el tótem antes de atender pacientes.</p>
             </div>
 
+            <label class="field-label" for="apiBaseUrlInput">URL del backend</label>
+            <input
+                id="apiBaseUrlInput"
+                class="endpoint-input"
+                type="url"
+                inputmode="url"
+                autocomplete="url"
+                spellcheck="false"
+                placeholder="http://localhost:3000"
+                value="${escapeHtml(apiBaseUrl)}"
+            >
+
             <label class="field-label" for="sucursalSelect">Sucursal</label>
             <select id="sucursalSelect" class="branch-select">
                 <option value="">Selecciona una sucursal</option>
@@ -145,7 +168,7 @@ function renderSetupView() {
             <div class="setup-actions">
                 <button id="reloadBranchesButton" class="secondary-button" type="button">
                     <i data-lucide="refresh-cw"></i>
-                    Actualizar
+                    Actualizar sucursales
                 </button>
                 <button id="continueButton" class="primary-button" type="button" ${!sucursales.length ? "disabled" : ""}>
                     Continuar
@@ -268,9 +291,13 @@ function bindEvents() {
 }
 
 async function createTurno(servicio: Servicio) {
+    if (!saveConfiguredApiBaseUrl()) {
+        return;
+    }
+
     setLoading(true);
     try {
-        const response = await window.api.turnos.create(servicio.idServicio);
+        const response = await window.api.turnos.create(servicio.idServicio, apiBaseUrl);
         const ticketCode = buildTicketCode(response, servicio);
         isLoading = false;
         errorMessage = "";
@@ -361,6 +388,22 @@ function setLoading(value: boolean) {
     render();
 }
 
+function saveConfiguredApiBaseUrl() {
+    const input = document.getElementById("apiBaseUrlInput") as HTMLInputElement | null;
+    const rawValue = (input?.value ?? apiBaseUrl).trim();
+    const normalizedUrl = normalizeApiBaseUrl(rawValue);
+
+    if (!normalizedUrl) {
+        errorMessage = "Ingresa una URL válida para el backend.";
+        render();
+        return false;
+    }
+
+    apiBaseUrl = normalizedUrl;
+    localStorage.setItem(STORAGE_API_BASE_URL_KEY, apiBaseUrl);
+    return true;
+}
+
 function getSelectedSucursal() {
     return sucursales.find((sucursal) => sucursal.idSucursal === selectedSucursalId);
 }
@@ -391,4 +434,24 @@ function escapeHtml(value: string | number | null | undefined) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+}
+
+function normalizeApiBaseUrl(value: string) {
+    const trimmedValue = value.trim();
+
+    if (!trimmedValue) {
+        return "";
+    }
+
+    const valueWithProtocol = /^[a-z][a-z\d+\-.]*:\/\//i.test(trimmedValue)
+        ? trimmedValue
+        : `${trimmedValue.startsWith("localhost") || trimmedValue.startsWith("127.0.0.1") ? "http" : "https"}://${trimmedValue}`;
+
+    try {
+        const parsedUrl = new URL(valueWithProtocol);
+        const path = parsedUrl.pathname.replace(/\/api\/?$/, "").replace(/\/+$/, "");
+        return `${parsedUrl.origin}${path}`;
+    } catch {
+        return "";
+    }
 }
