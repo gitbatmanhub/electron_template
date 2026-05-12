@@ -327,7 +327,7 @@ function showTicket(servicio: Servicio, ticketCode: string) {
         code: ticketCode,
         service: servicio.nombre,
         date: ticketDate,
-        footer: "Gracias por su visita"
+        footer: "www.grupobiomedicis.com"
     };
 
     ticketLayer.innerHTML = `
