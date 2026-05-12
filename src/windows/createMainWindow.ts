@@ -3,14 +3,14 @@ import path from "node:path";
 
 export function createWindow() {
     const isDev = process.env.NODE_ENV === "development";
-    const kioskEnabled = process.env.TOTEM_KIOSK === "true";
+    const kioskEnabled = process.env.TOTEM_KIOSK === "true" || process.argv.includes("--kiosk");
 
     const win = new BrowserWindow({
         width: 1280,
         height: 900,
         minWidth: 1024,
         minHeight: 720,
-        fullscreen: isDev,
+        fullscreen: kioskEnabled,
         kiosk: kioskEnabled,
         autoHideMenuBar: true,
         webPreferences: {
