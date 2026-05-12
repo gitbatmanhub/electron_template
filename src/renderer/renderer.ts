@@ -28,6 +28,15 @@ type TurnoResponse = {
     data?: TurnoResponse;
 };
 
+type TicketPrintData = {
+    brand: string;
+    branch: string;
+    code: string;
+    service: string;
+    date: string;
+    footer: string;
+};
+
 const STORAGE_SUCURSAL_KEY = "totem.selectedSucursalId";
 const STORAGE_API_BASE_URL_KEY = "totem.apiBaseUrl";
 const DEFAULT_API_BASE_URL = "http://localhost:3000";
@@ -39,6 +48,7 @@ let selectedSucursalId = localStorage.getItem(STORAGE_SUCURSAL_KEY) ?? "";
 let apiBaseUrl = localStorage.getItem(STORAGE_API_BASE_URL_KEY) ?? DEFAULT_API_BASE_URL;
 let isLoading = false;
 let errorMessage = "";
+let currentTicket: TicketPrintData | null = null;
 
 window.addEventListener("load", async () => {
     render();
@@ -47,10 +57,6 @@ window.addEventListener("load", async () => {
     if (selectedSucursalId) {
         await loadServicios(selectedSucursalId);
     }
-});
-
-window.addEventListener("afterprint", () => {
-    closeTicket();
 });
 
 async function loadSucursales() {
@@ -313,6 +319,16 @@ function showTicket(servicio: Servicio, ticketCode: string) {
     const selectedSucursal = getSelectedSucursal();
     const ticketLayer = document.getElementById("ticketLayer") as HTMLElement;
     const now = new Date();
+    const ticketDate = `${now.toLocaleDateString("es-EC")} ${now.toLocaleTimeString("es-EC", { hour: "2-digit", minute: "2-digit" })}`;
+
+    currentTicket = {
+        brand: "Centro Médico Biomedicis",
+        branch: selectedSucursal?.nombre ?? "",
+        code: ticketCode,
+        service: servicio.nombre,
+        date: ticketDate,
+        footer: "Gracias por su visita"
+    };
 
     ticketLayer.innerHTML = `
         <div class="ticket-backdrop">
@@ -321,13 +337,13 @@ function showTicket(servicio: Servicio, ticketCode: string) {
                     <i data-lucide="x"></i>
                 </button>
                 <div id="printableTicket" class="ticket-paper">
-                    <p class="ticket-brand">Centro Médico Biomedicis</p>
-                    <p class="ticket-branch">${escapeHtml(selectedSucursal?.nombre ?? "")}</p>
+                    <p class="ticket-brand">${escapeHtml(currentTicket.brand)}</p>
+                    <p class="ticket-branch">${escapeHtml(currentTicket.branch)}</p>
                     <p class="ticket-label">Turno</p>
-                    <strong class="ticket-code">${escapeHtml(ticketCode)}</strong>
-                    <p class="ticket-service">${escapeHtml(servicio.nombre)}</p>
-                    <p class="ticket-date">${now.toLocaleDateString("es-EC")} ${now.toLocaleTimeString("es-EC", { hour: "2-digit", minute: "2-digit" })}</p>
-                    <p class="ticket-footer">Gracias por su visita</p>
+                    <strong class="ticket-code">${escapeHtml(currentTicket.code)}</strong>
+                    <p class="ticket-service">${escapeHtml(currentTicket.service)}</p>
+                    <p class="ticket-date">${escapeHtml(currentTicket.date)}</p>
+                    <p class="ticket-footer">${escapeHtml(currentTicket.footer)}</p>
                 </div>
                 <div class="ticket-actions">
                     <button id="printTicketButton" class="primary-button" type="button">
@@ -347,8 +363,14 @@ function showTicket(servicio: Servicio, ticketCode: string) {
 }
 
 async function printTicket() {
+    if (!currentTicket) {
+        errorMessage = "No hay un ticket listo para imprimir.";
+        render();
+        return;
+    }
+
     try {
-        await window.api.printer.printCurrent();
+        await window.api.printer.printTicket(currentTicket);
         closeTicket();
     } catch (error) {
         console.error("Error imprimiendo ticket:", error);
@@ -364,6 +386,7 @@ function closeTicket() {
         ticketLayer.innerHTML = "";
     }
 
+    currentTicket = null;
     render();
 }
 

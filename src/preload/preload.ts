@@ -16,6 +16,13 @@ contextBridge.exposeInMainWorld("api", {
             ipcRenderer.invoke("turnos:create", idServicio, apiBaseUrl)
     },
     printer: {
-        printCurrent: () => ipcRenderer.invoke("printer:print-current")
+        printTicket: (ticket: {
+            brand: string;
+            branch: string;
+            code: string;
+            service: string;
+            date: string;
+            footer: string;
+        }) => ipcRenderer.invoke("printer:print-ticket", ticket)
     }
 });

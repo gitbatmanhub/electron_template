@@ -19,7 +19,7 @@ declare global {
                 create: (idServicio: string, apiBaseUrl?: string) => Promise<TurnoResponse>;
             };
             printer: {
-                printCurrent: () => Promise<boolean>;
+                printTicket: (ticket: TicketPrintData) => Promise<boolean>;
             };
         };
     }
@@ -54,4 +54,13 @@ export interface TurnoResponse {
     numeroTurno?: string | number
     numero?: string | number
     data?: TurnoResponse
+}
+
+export interface TicketPrintData {
+    brand: string
+    branch: string
+    code: string
+    service: string
+    date: string
+    footer: string
 }
