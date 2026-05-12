@@ -15,14 +15,57 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1 class="text-3xl font-bold underline">
-    Hello world!
-</h1>
-<button id="loadFile">Cargar file</button>
-<button id="loadSucursales">Buscar Sucursales</button>
-<select id="listOfSucursales">
-    <option value="" disabled selected>Cargando opciones...</option>
-</select>
-<p>👋</p>
+<body class="min-h-screen bg-slate-100 flex flex-col items-center">
+
+<!-- HEADER -->
+<header class="w-full py-10 flex justify-center">
+    <h1 class="text-5xl font-bold text-slate-800">
+        GrupoBiomedicis - TotemDesktop
+    </h1>
+</header>
+
+<!-- CARD -->
+<main class="flex-1 flex items-center justify-center w-full">
+    <div class="bg-white shadow-2xl rounded-3xl p-10 w-[500px]">
+
+
+        <h2 class="text-2xl font-semibold text-slate-700 mb-8 text-center">
+            Seleccione una sucursal
+        </h2>
+        <div class="mt-10 flex items-center justify-center gap-x-6">
+            <button id="loadSucursales" class="rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Buscar Sucursales</button>
+        </div>
+
+        <!-- SELECT SUCURSAL -->
+        <div class="mb-6">
+            <label
+                    for="listOfSucursales"
+                    class="block text-sm font-medium text-slate-600 mb-2"
+            >
+                Sucursal
+            </label>
+
+            <select
+                    id="listOfSucursales"
+                    class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+                <option disabled value=""></option>
+            </select>
+        </div>
+
+
+
+        <!-- BUTTON -->
+        <button
+                id="continueButton"
+                class="w-full bg-blue-600 hover:bg-blue-700 transition-colors text-white font-semibold py-4 rounded-xl"
+        >
+            Continuar
+        </button>
+
+    </div>
+</main>
+
+</body>
 </body>
 </html>

@@ -1,3 +1,7 @@
+import { createIcons, icons } from "lucide";
+
+createIcons({ icons });
+
 window.addEventListener("load", () => {
     const button = document.getElementById("loadFile");
     const loadSucursales = document.getElementById("loadSucursales");
