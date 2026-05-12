@@ -24,7 +24,9 @@ export function registerPrinterHandlers() {
         });
 
         return new Promise<boolean>((resolve, reject) => {
-            printWindow.webContents.once("did-finish-load", () => {
+            printWindow.webContents.once("did-finish-load", async () => {
+                const pageHeight = await getTicketPageHeight(printWindow);
+
                 printWindow.webContents.print(
                     {
                         silent,
@@ -34,7 +36,7 @@ export function registerPrinterHandlers() {
                         },
                         pageSize: {
                             width: 72000,
-                            height: 120000
+                            height: pageHeight
                         }
                     },
                     (success, failureReason) => {
@@ -68,7 +70,7 @@ function renderTicketHtml(ticket: TicketPrintData) {
     <meta charset="utf-8">
     <style>
         @page {
-            size: 72mm 120mm;
+            size: 72mm auto;
             margin: 0;
         }
 
@@ -141,6 +143,20 @@ function renderTicketHtml(ticket: TicketPrintData) {
     </main>
 </body>
 </html>`;
+}
+
+async function getTicketPageHeight(printWindow: BrowserWindow) {
+    const contentHeight = await printWindow.webContents.executeJavaScript(`
+        Math.ceil(document.querySelector(".ticket").getBoundingClientRect().height)
+    `) as number;
+    const cssPixelToMicrons = 25400 / 96;
+    const safetyPaddingMicrons = 2500;
+    const minTicketHeightMicrons = 45000;
+
+    return Math.max(
+        minTicketHeightMicrons,
+        Math.ceil(contentHeight * cssPixelToMicrons) + safetyPaddingMicrons
+    );
 }
 
 function escapeHtml(value: string) {
