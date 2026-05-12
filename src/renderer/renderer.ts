@@ -182,10 +182,8 @@ function renderSetupView() {
 function renderServiciosView(sucursalNombre: string) {
     const count = servicios.length;
     const columns = count <= 4 ? Math.max(count, 1) : Math.min(4, Math.ceil(count / 2));
-    const rows = count <= 4 ? 1 : 2;
-    const cardWidth = count <= 4 ? 430 : 350;
-    const gap = 32;
-    const calculatedWidth = columns * cardWidth + Math.max(columns - 1, 0) * gap;
+    const gridSizeClass = count <= 4 ? "large" : "compact";
+    const scrollClass = count > 8 ? "services-grid--scrollable" : "";
 
     return `
         <section class="services-shell">
@@ -197,8 +195,7 @@ function renderServiciosView(sucursalNombre: string) {
             ${renderStatus()}
 
             <div
-                class="services-grid services-grid--${count <= 4 ? "large" : "compact"}"
-                style="--columns: ${columns}; --visible-rows: ${rows}; --grid-width: min(90vw, ${calculatedWidth}px);"
+                class="services-grid services-grid--${gridSizeClass} services-grid--cols-${columns} ${scrollClass}"
             >
                 ${servicios.map(renderServiceCard).join("")}
             </div>

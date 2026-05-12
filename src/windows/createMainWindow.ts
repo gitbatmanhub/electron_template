@@ -10,8 +10,8 @@ export function createWindow() {
         height: 900,
         minWidth: 1024,
         minHeight: 720,
-        fullscreen: kioskEnabled,
-        kiosk: kioskEnabled,
+        fullscreen: true,
+        kiosk: true,
         autoHideMenuBar: true,
         webPreferences: {
             preload: path.join(__dirname, "../preload/preload.js"),
