@@ -337,7 +337,8 @@ function showTicket(servicio: Servicio, ticketCode: string) {
                     <i data-lucide="x"></i>
                 </button>
                 <div id="printableTicket" class="ticket-paper">
-                    <p class="ticket-brand">${escapeHtml(currentTicket.brand)}</p>
+                    <img class="ticket-logo" src="./biomedicisLogo.svg" alt="Biomedicis">
+                    <!-- <p class="ticket-brand">${escapeHtml(currentTicket.brand)}</p> -->
                     <p class="ticket-branch">${escapeHtml(currentTicket.branch)}</p>
                     <p class="ticket-label">Turno</p>
                     <strong class="ticket-code">${escapeHtml(currentTicket.code)}</strong>

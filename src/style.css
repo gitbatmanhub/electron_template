@@ -490,6 +490,13 @@ button:disabled {
     text-align: center;
 }
 
+.ticket-logo {
+    width: min(230px, 82%);
+    height: auto;
+    display: block;
+    margin: 0 auto 18px;
+}
+
 .ticket-brand,
 .ticket-label,
 .ticket-service,

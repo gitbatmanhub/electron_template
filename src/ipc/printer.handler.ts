@@ -1,4 +1,6 @@
 import { BrowserWindow, ipcMain } from "electron";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
 
 interface TicketPrintData {
     brand: string;
@@ -63,6 +65,8 @@ export function registerPrinterHandlers() {
 }
 
 function renderTicketHtml(ticket: TicketPrintData) {
+    const logoUrl = getLogoUrl();
+
     return `
 <!doctype html>
 <html lang="es">
@@ -92,6 +96,13 @@ function renderTicketHtml(ticket: TicketPrintData) {
             width: 72mm;
             padding: 6mm 4mm;
             text-align: center;
+        }
+
+        .logo {
+            display: block;
+            width: 54mm;
+            height: auto;
+            margin: 0 auto 5mm;
         }
 
         .brand {
@@ -133,6 +144,7 @@ function renderTicketHtml(ticket: TicketPrintData) {
 </head>
 <body>
     <main class="ticket">
+        <img class="logo" src="${logoUrl}" alt="Biomedicis">
         <p class="brand">${escapeHtml(ticket.brand)}</p>
         <p class="branch">${escapeHtml(ticket.branch)}</p>
         <p class="label">Turno</p>
@@ -143,6 +155,14 @@ function renderTicketHtml(ticket: TicketPrintData) {
     </main>
 </body>
 </html>`;
+}
+
+function getLogoUrl() {
+    const logoPath = process.env.NODE_ENV === "development"
+        ? path.join(__dirname, "../../src/public/biomedicisLogo.svg")
+        : path.join(__dirname, "../renderer/biomedicisLogo.svg");
+
+    return pathToFileURL(logoPath).href;
 }
 
 async function getTicketPageHeight(printWindow: BrowserWindow) {
